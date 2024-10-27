@@ -6,3 +6,6 @@ build/
 *.sln
 CMakeCache.txt
 cmake_install.cmake
+x64/
+driver_migawari.dir/
+Debug/
