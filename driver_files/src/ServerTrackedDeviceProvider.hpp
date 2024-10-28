@@ -11,4 +11,6 @@ public:
 	virtual bool ShouldBlockStandbyMode() { return false; };
 	virtual void EnterStandby() { };
 	virtual void LeaveStandby() { };
+private:
+    int *pMemory;
 };
