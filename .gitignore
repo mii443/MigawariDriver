@@ -10,3 +10,4 @@ x64/
 driver_migawari.dir/
 Debug/
 Release/
+lib/minhook/
