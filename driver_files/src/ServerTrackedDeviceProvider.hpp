@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Device.hpp"
+
 #include <openvr_driver.h>
 
 class ServerTrackedDeviceProvider : public vr::IServerTrackedDeviceProvider {
@@ -12,5 +14,5 @@ public:
 	virtual void EnterStandby() { };
 	virtual void LeaveStandby() { };
 private:
-    int *pMemory;
+    SharedDevice* devices[vr::k_unMaxTrackedDeviceCount];
 };
