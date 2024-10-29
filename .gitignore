@@ -1,6 +1,7 @@
 CMakeFiles/
 build/
 .vscode/
+.vs/
 *.vcxproj
 *.filters
 *.sln
