@@ -1,6 +1,9 @@
 #include "DriverFactory.hpp"
 #include "ServerTrackedDeviceProvider.hpp"
 #include "VRWatchdogProvider.hpp"
+#ifndef _MSC_VER
+#include <cstring>
+#endif
 
 static ServerTrackedDeviceProvider g_serverTrackedDeviceProvider;
 static VRWatchdogProvider g_watchdogProvider;

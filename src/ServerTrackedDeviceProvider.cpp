@@ -1,10 +1,13 @@
 #include "ServerTrackedDeviceProvider.hpp"
 #include "Device.hpp"
+#ifdef _MSC_VER
 #include <Windows.h>
+#endif
 
 vr::EVRInitError ServerTrackedDeviceProvider::Init(vr::IVRDriverContext *pDriverContext) {
     VR_INIT_SERVER_DRIVER_CONTEXT(pDriverContext);
 
+#ifdef _MSC_VER
     auto name = "MigawariDriver_k_unMaxTrackedDeviceCount";
     auto size = 4;
     HANDLE hSharedMemory = CreateFileMapping(NULL, NULL, PAGE_READWRITE, NULL, size, name);
@@ -19,6 +22,7 @@ vr::EVRInitError ServerTrackedDeviceProvider::Init(vr::IVRDriverContext *pDriver
         HANDLE pHandle = CreateFileMapping(NULL, NULL, PAGE_READWRITE, NULL, sizeof(SharedDevice), ("MigawariDriver_Device" + std::to_string(i)).c_str());
         devices[i] = (SharedDevice*)MapViewOfFile(pHandle, FILE_MAP_ALL_ACCESS, NULL, NULL, sizeof(SharedDevice));
     }
+#endif
 
     return vr::VRInitError_None;
 }

@@ -12,3 +12,5 @@ driver_migawari.dir/
 Debug/
 Release/
 lib/minhook/
+libdriver_migawari.so
+Makefile
