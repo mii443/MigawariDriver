@@ -19,11 +19,8 @@ vr::EVRInitError ServerTrackedDeviceProvider::Init(vr::IVRDriverContext *pDriver
     std::string message = "Initializing migawari driver...\n";
     vr::VRDriverLog()->Log(message.c_str());
 
-    for (int i = 0; i < vr::k_unMaxTrackedDeviceCount; i++) {
-        HANDLE pHandle = CreateFileMapping(NULL, NULL, PAGE_READWRITE, NULL, sizeof(SharedDevice), ("MigawariDriver_Device" + std::to_string(i)).c_str());
-        devices[i] = (SharedDevice*)MapViewOfFile(pHandle, FILE_MAP_ALL_ACCESS, NULL, NULL, sizeof(SharedDevice));
-        devices[i]->enabled = true;
-    }
+    auto hMapFile = CreateFileMapping(NULL, NULL, PAGE_READWRITE, NULL, sizeof(SharedDevice) * 64, "MigawariDriver_Devices");
+    devices = (SharedDevice*)MapViewOfFile(hMapFile, FILE_MAP_ALL_ACCESS, NULL, NULL, sizeof(SharedDevice) * 64);
 
     InjectHooks(this, pDriverContext);
 #endif
@@ -35,8 +32,20 @@ void ServerTrackedDeviceProvider::Cleanup() {
     VR_CLEANUP_SERVER_DRIVER_CONTEXT();
 }
 
-void ServerTrackedDeviceProvider::SetSharedDevice(const vr::DriverPose_t &newPose, uint32_t unWhichDevice) {
-    devices[unWhichDevice]->actual_pose = newPose;
+void ServerTrackedDeviceProvider::SetSharedDevice(vr::DriverPose_t &newPose, uint32_t unWhichDevice) {
+    devices[unWhichDevice].actual_pose = newPose;
+
+    if (devices[unWhichDevice].overwrite) {
+        auto overwrite_pose = devices[unWhichDevice].overwrite_pose;
+        newPose.qRotation = overwrite_pose.qRotation;
+
+        for (int i = 0; i < 3; i++) {
+            newPose.vecAcceleration[i] = overwrite_pose.vecAcceleration[i];
+            newPose.vecAngularAcceleration[i] = overwrite_pose.vecAngularAcceleration[i];
+            newPose.vecPosition[i] = overwrite_pose.vecPosition[i];
+            newPose.vecVelocity[i] = overwrite_pose.vecVelocity[i];
+        }
+    }
 }
 
 const char * const *ServerTrackedDeviceProvider::GetInterfaceVersions() {
