@@ -22,6 +22,7 @@ vr::EVRInitError ServerTrackedDeviceProvider::Init(vr::IVRDriverContext *pDriver
     for (int i = 0; i < vr::k_unMaxTrackedDeviceCount; i++) {
         HANDLE pHandle = CreateFileMapping(NULL, NULL, PAGE_READWRITE, NULL, sizeof(SharedDevice), ("MigawariDriver_Device" + std::to_string(i)).c_str());
         devices[i] = (SharedDevice*)MapViewOfFile(pHandle, FILE_MAP_ALL_ACCESS, NULL, NULL, sizeof(SharedDevice));
+        devices[i]->enabled = true;
     }
 
     InjectHooks(this, pDriverContext);
@@ -32,6 +33,10 @@ vr::EVRInitError ServerTrackedDeviceProvider::Init(vr::IVRDriverContext *pDriver
 
 void ServerTrackedDeviceProvider::Cleanup() {
     VR_CLEANUP_SERVER_DRIVER_CONTEXT();
+}
+
+void ServerTrackedDeviceProvider::SetSharedDevice(const vr::DriverPose_t &newPose, uint32_t unWhichDevice) {
+    devices[unWhichDevice]->actual_pose = newPose;
 }
 
 const char * const *ServerTrackedDeviceProvider::GetInterfaceVersions() {

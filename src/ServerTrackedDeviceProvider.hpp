@@ -13,6 +13,7 @@ public:
 	virtual bool ShouldBlockStandbyMode() { return false; };
 	virtual void EnterStandby() { };
 	virtual void LeaveStandby() { };
+    virtual void SetSharedDevice(const vr::DriverPose_t &newPose, uint32_t unWhichDevice);
 private:
     SharedDevice* devices[vr::k_unMaxTrackedDeviceCount];
 };

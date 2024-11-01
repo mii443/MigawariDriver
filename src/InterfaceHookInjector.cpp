@@ -15,11 +15,13 @@ static Hook<void(*)(vr::IVRServerDriverHost *, uint32_t, const vr::DriverPose_t 
 
 static void DetourTrackedDevicePoseUpdated005(vr::IVRServerDriverHost *_this, uint32_t unWhichDevice, const vr::DriverPose_t &newPose, uint32_t unPoseStructSize) {
     auto pose = newPose;
+    Driver->SetSharedDevice(newPose, unWhichDevice);
     TrackedDevicePoseUpdatedHook005.originalFunc(_this, unWhichDevice, pose, unPoseStructSize);
 }
 
 static void DetourTrackedDevicePoseUpdated006(vr::IVRServerDriverHost *_this, uint32_t unWhichDevice, const vr::DriverPose_t &newPose, uint32_t unPoseStructSize) {
     auto pose = newPose;
+    Driver->SetSharedDevice(newPose, unWhichDevice);
     TrackedDevicePoseUpdatedHook006.originalFunc(_this, unWhichDevice, pose, unPoseStructSize);
 }
 
