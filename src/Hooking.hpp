@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <MinHook.h>
+#include "MinHook.h"
 #include <map>
 #include <string>
 
@@ -37,18 +37,15 @@ public:
         auto err = MH_CreateHook(targetFunc, detourFunction, (LPVOID *)&originalFunc);
 
         if (err != MH_OK) {
-            vr::VRDriverLog()->Log("Failed to create hook.".c_str());
             return false;
         }
 
         err = MH_EnableHook(targetFunc);
         if (err != MH_OK) {
-            vr::VRDriverLog()->Log("Failed to enable hook.".c_str());
             MH_RemoveHook(targetFunc);
             return false;
         }
 
-        vr::VRDriverLog()->Log("Hook enabled.".c_str());
         enabled = true;
         return true;
     }

@@ -1,5 +1,6 @@
 #include "ServerTrackedDeviceProvider.hpp"
 #include "Device.hpp"
+#include "InterfaceHookInjector.hpp"
 #ifdef _MSC_VER
 #include <Windows.h>
 #endif
@@ -22,6 +23,8 @@ vr::EVRInitError ServerTrackedDeviceProvider::Init(vr::IVRDriverContext *pDriver
         HANDLE pHandle = CreateFileMapping(NULL, NULL, PAGE_READWRITE, NULL, sizeof(SharedDevice), ("MigawariDriver_Device" + std::to_string(i)).c_str());
         devices[i] = (SharedDevice*)MapViewOfFile(pHandle, FILE_MAP_ALL_ACCESS, NULL, NULL, sizeof(SharedDevice));
     }
+
+    InjectHooks(this, pDriverContext);
 #endif
 
     return vr::VRInitError_None;
